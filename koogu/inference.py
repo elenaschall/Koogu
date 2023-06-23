@@ -95,7 +95,7 @@ def _combine_and_write(raven_writer, out_file_info,
     channel_combined_det_times = [None] * num_channels
     channel_combined_det_scores = [None] * num_channels
     channel_combined_det_labels = [None] * num_channels
-    num_combined_dets_per_channel = np.zeros((num_channels,), np.uint32)
+    num_combined_dets_per_channel = np.zeros((num_channels,), np.uint)
     min_det_len = None if squeeze_min_dur is None else int(squeeze_min_dur * fs)
     for ch in range(num_channels):
         channel_combined_det_times[ch], \
@@ -355,7 +355,7 @@ def recognize(model_dir, audio_root,
     channels = None    # fetch all channels' clips if nothing specified
     if kwargs.get('channels', None) is not None:    # something specified?
         # fetch selected channel's clips
-        channels = np.sort(np.unique(kwargs['channels']).astype(np.uint32))
+        channels = np.sort(np.unique(kwargs['channels']).astype(np.uint))
 
     # Choose whether to use ordered or unordered processor
     processed_items_generator = \
@@ -688,7 +688,7 @@ if __name__ == '__main__':
         optional_args['combine_outputs'] = args.combine_outputs
     if args.channels is not None:
         optional_args['channels'] = np.sort(
-            np.unique(args.channels).astype(np.uint32))
+            np.unique(args.channels).astype(np.uint))
     if args.scale_scores is not None:
         optional_args['scale_scores'] = args.scale_scores
     if args.top:

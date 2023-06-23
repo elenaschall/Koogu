@@ -185,7 +185,7 @@ class SpectroTemporal(_Augmentation):
 
         assert (f_incr is not None) or (t_incr is not None)
 
-        tf_zero = tf.constant(0, dtype=tf.int32)
+        tf_zero = tf.constant(0, dtype=tf.int)
 
         sl_off = [None, None]   # offsets for slicing
         if f_incr is not None:
@@ -230,7 +230,7 @@ class SpectroTemporal(_Augmentation):
 
         assert (f_decr is not None) or (t_decr is not None)
 
-        tf_zero = tf.constant(0, dtype=tf.int32)
+        tf_zero = tf.constant(0, dtype=tf.int)
 
         paddings = [None, None]   # padding amounts
         if f_decr is not None:
@@ -377,7 +377,7 @@ class AddEcho(Temporal):
                            lambda: echo_amp, lambda: -echo_amp)
 
         val = tf.random.uniform([], *self._val_range_args)
-        echo_offset = tf.cast(tf.round(self._fs * val), tf.int32)
+        echo_offset = tf.cast(tf.round(self._fs * val), tf.int)
 
         echo = tf.pad(
             echo_amp * tf.slice(clip, [0], [clip.shape[t_axis] - echo_offset]),
@@ -414,7 +414,7 @@ class ShiftPitch(Temporal):
 
         orig_len = clip.shape[t_axis]
 
-        diff = tf.cast(val * orig_len, tf.int32) - orig_len
+        diff = tf.cast(val * orig_len, tf.int) - orig_len
 
         return tf.cond(
             diff == 0,
@@ -477,7 +477,7 @@ class SmearFrequency(SpectroTemporal):
         assert val_range[0] <= val_range[1]
 
         self._val_range_args = val_range if len(val_range) > 2 else \
-            (val_range[0], val_range[1], tf.int32)
+            (val_range[0], val_range[1], tf.int)
 
         super(SmearFrequency, self).__init__()
 
@@ -513,7 +513,7 @@ class SmearTime(SpectroTemporal):
         assert val_range[0] <= val_range[1]
 
         self._val_range_args = val_range if len(val_range) > 2 else \
-            (val_range[0], val_range[1], tf.int32)
+            (val_range[0], val_range[1], tf.int)
 
         super(SmearTime, self).__init__()
 
@@ -549,7 +549,7 @@ class SquishFrequency(SpectroTemporal):
         assert val_range[0] <= val_range[1]
 
         self._val_range_args = val_range if len(val_range) > 2 else \
-            (val_range[0], val_range[1], tf.int32)
+            (val_range[0], val_range[1], tf.int)
 
         super(SquishFrequency, self).__init__()
 
@@ -585,7 +585,7 @@ class SquishTime(SpectroTemporal):
         assert val_range[0] <= val_range[1]
 
         self._val_range_args = val_range if len(val_range) > 2 else \
-            (val_range[0], val_range[1], tf.int32)
+            (val_range[0], val_range[1], tf.int)
 
         super(SquishTime, self).__init__()
 

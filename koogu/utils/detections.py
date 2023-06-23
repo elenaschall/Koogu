@@ -85,7 +85,7 @@ def combine_streaks(det_scores, clip_start_samples, num_samples, squeeze_min_len
 
     num_detections = len(streak_class_idxs)
     if num_detections == 0:
-        return np.zeros((0, 2), dtype=np.uint64), np.zeros((0,), dtype=np.float), streak_class_idxs
+        return np.zeros((0, 2), dtype=np.uint), np.zeros((0,), dtype=np.float), streak_class_idxs
 
     if squeeze_min_len is not None:
         max_num_overlapping_clips = \
@@ -114,10 +114,10 @@ def combine_streaks(det_scores, clip_start_samples, num_samples, squeeze_min_len
     else:
         ret_samp_extents = np.asarray(
             [[clip_start_samples[streak_onset_idxs[idx]], clip_start_samples[streak_end_idxs[idx]] + num_samples - 1]
-             for idx in range(num_detections)], dtype=np.uint64)
+             for idx in range(num_detections)], dtype=np.uint)
         ret_extents = np.asarray(
             [[streak_onset_idxs[idx], streak_end_idxs[idx]]
-             for idx in range(num_detections)], dtype=np.uint64)
+             for idx in range(num_detections)], dtype=np.uint)
         ret_scores = np.asarray(
             [np.max(det_scores[streak_onset_idxs[idx]:(streak_end_idxs[idx] + 1), streak_class_idxs[idx]])
              for idx in range(num_detections)])
@@ -346,8 +346,8 @@ def assess_annotations_and_detections_match(
     tps = np.zeros((num_classes, ), dtype=np.uint)
     tp_plus_fp = np.zeros((num_classes, ), dtype=np.uint)
     reca_numerator = np.zeros((num_classes, ), dtype=np.uint)
-    tp_mask = np.full((len(det_labels), ), False, dtype=np.bool)
-    recall_mask = np.full((len(gt_labels), ), False, dtype=np.bool)
+    tp_mask = np.full((len(det_labels), ), False, dtype=bool)
+    recall_mask = np.full((len(gt_labels), ), False, dtype=bool)
 
     for c_idx in np.arange(num_classes):
         # Current class GTs and dets
@@ -537,7 +537,7 @@ def postprocess_detections(clip_scores, clip_offsets, clip_length,
     elif suppress_nonmax:
         nan_mask = nonmax_suppress_mask(clip_scores)
     else:
-        nan_mask = np.full_like(clip_scores, False, dtype=np.bool)
+        nan_mask = np.full_like(clip_scores, False, dtype=bool)
 
     return combine_streaks(np.where(nan_mask, np.nan, clip_scores),
                            clip_offsets, clip_length,
@@ -552,7 +552,7 @@ def nonmax_suppress_mask(scores):
     :meta private:
     """
 
-    nonmax_mask = np.full(scores.shape, True, dtype=np.bool)
+    nonmax_mask = np.full(scores.shape, True, dtype=bool)
     nonmax_mask[np.arange(scores.shape[0]), scores.argmax(axis=1)] = False
 
     return nonmax_mask

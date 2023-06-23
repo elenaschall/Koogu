@@ -137,7 +137,7 @@ class Audio2Spectral(tf.keras.layers.Layer):
 
         # Pre-compute segmentation boundaries (see _to_psd() for more info).
         # Store (seg. start idx, seg. size) pairs.
-        self.psd_segs = np.zeros((3, 2), dtype=np.int)
+        self.psd_segs = np.zeros((3, 2), dtype=int)
         if valid_f_idx_start == 0:
             self.psd_segs[0, 1] = 1  # Include the 0 Hz bin
             self.psd_segs[1, 0] = 1  # For next chunk
@@ -360,7 +360,7 @@ class LoG(tf.keras.layers.Layer):
 
             # Update for next iteration
             prev_scale_padding = curr_scale_padding
-        self.f_padding_vec = [tf.constant(pv, dtype=tf.int32)
+        self.f_padding_vec = [tf.constant(pv, dtype=tf.int)
                               for pv in f_padding_vec]
 
         self.offsets = None
@@ -497,7 +497,7 @@ class GaussianBlur(tf.keras.layers.Layer):
         f_axis, t_axis = (1, 2) if data_format == 'channels_last' else (2, 3)
 
         kernel = Filters.gauss_kernel_1d(sigma)
-        kernel_len = np.int32(len(kernel))
+        kernel_len = int(len(kernel))
 
         # Reshaping as [H, W, in_channels, out_channels]
         self.kernel_y = tf.constant(
@@ -513,7 +513,7 @@ class GaussianBlur(tf.keras.layers.Layer):
         padding_vec[f_axis] = [padding_amt, padding_amt]
         if apply_2d:
             padding_vec[t_axis] = [padding_amt, padding_amt]
-        self.padding_vec = tf.constant(padding_vec, dtype=tf.int32)
+        self.padding_vec = tf.constant(padding_vec, dtype=tf.int)
 
     @tf.function
     def call(self, inputs, **kwargs):
@@ -630,7 +630,7 @@ class Spec2Img(tf.keras.layers.Layer):
             outputs = (outputs - self._vmin) / (self._vmax - self._vmin)
 
         # Quantize
-        idxs = tf.cast(tf.round(outputs * (self._cmap.shape[0] - 1)), tf.int32)
+        idxs = tf.cast(tf.round(outputs * (self._cmap.shape[0] - 1)), tf.int)
 
         # Map to colors
         outputs = tf.gather(self._colors, idxs)

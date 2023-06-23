@@ -383,7 +383,7 @@ class DataFeeder(BaseFeeder):
                 recursive_listing(self._data_dir,
                                   match_extensions=FilenameExtensions.numpy)),
             args=None,
-            output_signature=(tf.TensorSpec(shape=(), dtype=tf.int64),
+            output_signature=(tf.TensorSpec(shape=(), dtype=tf.int),
                               tf.TensorSpec(shape=(), dtype=tf.string))
             )
 
@@ -437,7 +437,7 @@ class DataFeeder(BaseFeeder):
 
         class_files_tr, class_files_ev = [], []
         class_files_items_tr, class_files_items_ev = [], []
-        useable_class_mask = np.full((num_classes, ), True, dtype=np.bool)
+        useable_class_mask = np.full((num_classes, ), True, dtype=bool)
         for class_idx in range(num_classes):
 
             # Cumulative counts of class-specific clips across all files
@@ -466,9 +466,9 @@ class DataFeeder(BaseFeeder):
         files_clips_idxs_tr = []
         files_clips_idxs_ev = []
         per_class_samples_count_tr = np.zeros((len(valid_class_idxs), ),
-                                              dtype=np.int)
+                                              dtype=int)
         per_class_samples_count_ev = np.zeros((len(valid_class_idxs), ),
-                                              dtype=np.int)
+                                              dtype=int)
         file = None
         for f_idx, file in enumerate(
                 recursive_listing(data_dir,
@@ -477,8 +477,8 @@ class DataFeeder(BaseFeeder):
             label_mask = get_file_labels_mask(
                 os.path.join(data_dir, file))[:, useable_class_mask]
 
-            file_train_clips_idxs = [np.zeros((0, ), dtype=np.int)]
-            file_eval_clips_idxs = [np.zeros((0, ), dtype=np.int)]
+            file_train_clips_idxs = [np.zeros((0, ), dtype=int)]
+            file_eval_clips_idxs = [np.zeros((0, ), dtype=int)]
             for class_idx in range(out_num_classes):
                 file_class_idxs = np.where(label_mask[:, class_idx])[0]
 
@@ -547,7 +547,7 @@ class DataFeeder(BaseFeeder):
         all_idxs = random_state.permutation(cumul_counts[-1])[:upper_lim]
 
         train_split = upper_lim - \
-            np.round((val_split or 0.0) * upper_lim).astype(dtype=np.int64)
+            np.round((val_split or 0.0) * upper_lim).astype(dtype=int)
 
         # Find the idx of the file that each item in all_idxs belongs to
         file_refs = np.digitize(all_idxs,
@@ -587,7 +587,7 @@ class DataFeeder(BaseFeeder):
 
     @staticmethod
     def _get_file_clips_and_labels(filepath, clips_idxs, class_mask):
-        # In the npz file, clips are stored as int16 & labels are stored as
+        # In the npz file, clips are stored as int & labels are stored as
         # float16. Convert them appropriately before returning.
         with np.load(filepath) as data:
             return Convert.pcm2float(data['clips'][clips_idxs, :]), \

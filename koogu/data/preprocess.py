@@ -448,7 +448,7 @@ class GroundTruthDataAggregator:
 
     gt_type = np.float16         # Type of ground-truth label ("coverage") array
     ch_type = np.uint8           # Type of array containing channel indices
-    ret_counts_type = np.uint32  # Type of per-class counts array
+    ret_counts_type = np.uint  # Type of per-class counts array
 
     def __init__(self, output_filepath, num_classes):
 
@@ -485,7 +485,7 @@ class GroundTruthDataAggregator:
             clips=Convert.float2pcm(    # Convert to 16-bit PCM
                 np.concatenate(clips) if not normalize_clips else \
                 Audio.normalize(np.concatenate(clips)),
-                dtype=np.int16)
+                dtype=int)
         )
 
     @classmethod
@@ -595,7 +595,7 @@ class GroundTruthDataAggregatorWithAnnots(GroundTruthDataAggregator):
 
         self._labels = []
         self._unmatched_annots_mask = \
-            np.full((len(annots_labels),), False, dtype=np.bool)
+            np.full((len(annots_labels),), False, dtype=bool)
 
         super(GroundTruthDataAggregatorWithAnnots, self).__init__(
             output_filepath, num_classes)
@@ -774,7 +774,7 @@ class GroundTruthDataAggregatorWithAnnots(GroundTruthDataAggregator):
         else:
             # Nothing could be salvaged, return empty containers
             return np.zeros((0, clip_len), dtype=data.dtype), \
-                np.zeros((0,), dtype=np.int)
+                np.zeros((0,), dtype=int)
 
     @classmethod
     def _adjust_clip_annot_coverage(cls, coverage, upper_thld,
