@@ -383,7 +383,7 @@ class DataFeeder(BaseFeeder):
                 recursive_listing(self._data_dir,
                                   match_extensions=FilenameExtensions.numpy)),
             args=None,
-            output_signature=(tf.TensorSpec(shape=(), dtype=tf.int),
+            output_signature=(tf.TensorSpec(shape=(), dtype=tf.int64),
                               tf.TensorSpec(shape=(), dtype=tf.string))
             )
 
